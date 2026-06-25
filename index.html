@@ -2107,32 +2107,105 @@ button { position: relative; overflow: hidden; }
     <!-- SETTINGS -->
     <div id="settingsSection" style="display:none">
       <div class="section-head"><h2>Ajustes <em>·</em></h2></div>
-      <div class="bento" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
-        <div class="bento-card">
-          <div class="label">Identidad</div>
-          <div class="field" style="margin-top:8px"><label>Tu nombre</label><input id="setName" type="text" maxlength="60"></div>
-          <div class="field"><label>Hora del aviso diario</label><input id="setHour" type="time"></div>
-        </div>
-        <div class="bento-card">
-          <div class="label">Apariencia</div>
-          <div class="field" style="margin-top:8px"><label>Tema</label>
-            <select id="setTheme"><option value="auto">Automático</option><option value="dark">Oscuro</option><option value="light">Claro</option></select>
+
+      <div class="settings-tabs" id="settingsTabs" role="tablist">
+        <button class="settings-tab active" data-stab="me" role="tab">Yo</button>
+        <button class="settings-tab" data-stab="appearance" role="tab">Apariencia</button>
+        <button class="settings-tab" data-stab="sync" role="tab">Sync</button>
+        <button class="settings-tab" data-stab="data" role="tab">Datos</button>
+        <button class="settings-tab" data-stab="about" role="tab">Acerca</button>
+      </div>
+
+      <div class="settings-panel" data-stab="me">
+        <div class="bento" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+          <div class="bento-card">
+            <div class="label">Identidad</div>
+            <p style="font-size:13px;color:var(--text-muted);margin-top:8px;margin-bottom:14px">Cómo Mañana te llama en los saludos y notificaciones.</p>
+            <div class="field"><label>Tu nombre</label><input id="setName" type="text" maxlength="60" placeholder="ej: Ilia"></div>
+            <div class="field"><label>Hora del aviso diario</label><input id="setHour" type="time"></div>
           </div>
-          <div class="field"><label>Sonido al completar</label>
-            <select id="setSound"><option value="on">Activado</option><option value="off">Desactivado</option></select>
+          <div class="bento-card">
+            <div class="label">Comportamiento</div>
+            <div class="field" style="margin-top:8px"><label>Sonido al completar</label>
+              <select id="setSound"><option value="on">Activado</option><option value="off">Desactivado</option></select>
+            </div>
+            <div class="field"><label>Confeti al completar tareas</label>
+              <select id="setConfetti"><option value="on">Activado</option><option value="off">Desactivado</option></select>
+            </div>
           </div>
         </div>
-        <div class="bento-card">
-          <div class="label">Privacidad y datos</div>
-          <p style="font-size:13px;color:var(--text-muted);margin-top:8px;margin-bottom:14px;line-height:1.5">Tus datos viven solo en tu navegador. Nada se envía a ningún servidor.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-secondary" id="btnExport2">Exportar</button>
-            <button class="btn btn-secondary" id="btnImport2">Importar</button>
-            <button class="btn btn-secondary" id="btnGCal">Google Calendar</button>
-            <button class="btn btn-secondary" id="btnPerms2">Permisos</button>
-            <button class="btn btn-secondary" id="btnLegal2">Privacidad</button>
-            <button class="btn btn-secondary" id="btnSaveSettings">Guardar ajustes</button>
+      </div>
+
+      <div class="settings-panel" data-stab="appearance" style="display:none">
+        <div class="bento" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+          <div class="bento-card">
+            <div class="label">Tema</div>
+            <p style="font-size:13px;color:var(--text-muted);margin-top:8px;margin-bottom:14px">Claro, oscuro, o automático.</p>
+            <div class="theme-picker">
+              <label class="theme-card"><input type="radio" name="themeChoice" value="light"><span class="theme-card-light">Claro</span></label>
+              <label class="theme-card"><input type="radio" name="themeChoice" value="dark" checked><span class="theme-card-dark">Oscuro</span></label>
+              <label class="theme-card"><input type="radio" name="themeChoice" value="auto"><span class="theme-card-auto">Auto</span></label>
+            </div>
+          </div>
+          <div class="bento-card">
+            <div class="label">Tipografía</div>
+            <p style="font-size:13px;color:var(--text-muted);margin-top:8px;margin-bottom:14px">Newsreader para titulares, SF Pro para UI.</p>
+            <div style="font-family:'Newsreader',serif;font-size:20px;letter-spacing:-0.02em;line-height:1.1">Esto es un titular</div>
+            <div style="font-family:-apple-system,sans-serif;font-size:14px;color:var(--text-muted);margin-top:6px">Y esto es texto normal</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-panel" data-stab="sync" style="display:none">
+        <div class="bento" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+          <div class="bento-card">
+            <div class="label">Google Calendar</div>
+            <p style="font-size:13px;color:var(--text-muted);margin-top:8px;margin-bottom:14px">Sincroniza tus tareas con un calendario de Google.</p>
+            <button class="btn btn-secondary" id="btnGCal">Configurar</button>
+          </div>
+          <div class="bento-card">
+            <div class="label">Notificaciones del navegador</div>
+            <p style="font-size:13px;color:var(--text-muted);margin-top:8px;margin-bottom:14px">Avisos a la hora que configures.</p>
+            <button class="btn btn-secondary" id="btnNotif2">Pedir permiso</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-panel" data-stab="data" style="display:none">
+        <div class="bento" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+          <div class="bento-card">
+            <div class="label">Exportar / Importar</div>
+            <p style="font-size:13px;color:var(--text-muted);margin-top:8px;margin-bottom:14px">Tu plan completo en un JSON.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-secondary" id="btnExport2">Descargar JSON</button>
+              <button class="btn btn-secondary" id="btnImport2">Cargar JSON</button>
+            </div>
+          </div>
+          <div class="bento-card">
+            <div class="label">Zona peligrosa</div>
+            <p style="font-size:13px;color:var(--text-muted);margin-top:8px;margin-bottom:14px">Borra TODOS tus datos. No se puede deshacer.</p>
             <button class="btn btn-danger" id="btnReset">Borrar todo</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-panel" data-stab="about" style="display:none">
+        <div class="bento" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+          <div class="bento-card">
+            <div class="label">Mañana</div>
+            <p style="font-family:'Editorial',serif;font-size:18px;margin:10px 0 6px;letter-spacing:-0.01em">v6 · 2026</p>
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">App local-first de tareas y hábitos. Tus datos viven solo en tu navegador.</p>
+            <button class="btn btn-secondary" id="btnLegal2">Privacidad y términos</button>
+          </div>
+          <div class="bento-card">
+            <div class="label">Construido con</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:14px">
+              <span class="bento-tag">HTML5</span>
+              <span class="bento-tag">CSS3</span>
+              <span class="bento-tag">JS ES2024</span>
+              <span class="bento-tag">PWA</span>
+              <span class="bento-tag">A11y</span>
+            </div>
           </div>
         </div>
       </div>
