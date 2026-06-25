@@ -3900,11 +3900,12 @@ function render() {
   }
   $('#habitsMeta').textContent = state.habits.length ? `${state.habits.length} configurados` : '';
 
-  // Settings form
-  $('#setName').value = settings.name || '';
-  $('#setHour').value = settings.hourPush || '08:30';
-  $('#setTheme').value = settings.theme || 'auto';
-  $('#setSound').value = settings.sound || 'on';
+  // Settings form (legacy fields, may not exist anymore)
+  const setNameEl = $('#setName'); if (setNameEl) setNameEl.value = settings.name || '';
+  const setHourEl = $('#setHour'); if (setHourEl) setHourEl.value = settings.hourPush || '08:30';
+  const setThemeEl = $('#setTheme'); if (setThemeEl) setThemeEl.value = settings.theme || 'auto';
+  const setSoundEl = $('#setSound'); if (setSoundEl) setSoundEl.value = settings.sound || 'on';
+  const setConfettiEl = $('#setConfetti'); if (setConfettiEl) setConfettiEl.value = settings.confetti === false ? 'off' : 'on';
 
   if (view === 'calendar') renderCalendar();
   if (view === 'stats') renderStats();
