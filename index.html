@@ -1106,8 +1106,380 @@ a { color: inherit; text-decoration: none; }
 
 
 /* ============================================================
-   v5 — A11y / Ripple / Animations / Permissions / GCal
+   v6 — Hero / Empty States / Mobile FAB / Microinteractions
    ============================================================ */
+
+/* ===== HERO ===== */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 40px;
+  padding: 32px 36px;
+  background: linear-gradient(135deg, var(--surface) 0%, var(--canvas-2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  animation: reveal var(--d-reveal) var(--ease-out) both;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -10%;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+  pointer-events: none;
+  filter: blur(40px);
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.72 0 0 0 0 0.35 0 0 0 0 0.10 0 0 0 0.018 0'/></filter><rect width='100' height='100' filter='url(%23n)'/></svg>");
+  opacity: 0.7;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+[data-theme="dark"] .hero::after { mix-blend-mode: screen; opacity: 0.4; }
+.hero-left { position: relative; z-index: 1; flex: 1; min-width: 0; }
+.hero-right { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; flex-shrink: 0; }
+.hero-actions { display: flex; gap: 4px; }
+
+.eyebrow-sep {
+  display: inline-block;
+  width: 3px; height: 3px;
+  background: var(--text-faint);
+  border-radius: 50%;
+  margin: 0 8px;
+  vertical-align: middle;
+}
+.eyebrow-week {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.hello {
+  font-family: 'Newsreader', 'Lyon Text', 'Instrument Serif', 'Cambria', Georgia, serif;
+  font-size: clamp(34px, 5.5vw, 56px);
+  font-weight: 400;
+  letter-spacing: -0.028em;
+  line-height: 1.05;
+  margin: 8px 0 6px;
+}
+.hello em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 400;
+  position: relative;
+  display: inline-block;
+}
+.hello em::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 4px;
+  height: 3px;
+  background: var(--accent);
+  opacity: 0.18;
+  border-radius: 2px;
+  transition: opacity var(--d-press) var(--ease-out);
+}
+.greeting-block:hover .hello em::after,
+.hero:hover .hello em::after { opacity: 0.35; }
+
+.hero-question {
+  font-size: 17px;
+  color: var(--text-soft);
+  margin-bottom: 16px;
+  letter-spacing: -0.005em;
+}
+
+.hero-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.hero-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-soft);
+  transition: all var(--d-press) var(--ease-out);
+}
+.hero-chip svg { color: var(--accent); flex-shrink: 0; }
+.hero-chip:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 20px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--d-press) var(--ease-out), transform var(--d-press) var(--ease-out), box-shadow var(--d-press) var(--ease-out);
+  box-shadow: 0 1px 3px rgba(184, 90, 26, 0.2), 0 0 0 4px transparent;
+  position: relative;
+  letter-spacing: -0.005em;
+}
+.hero-cta:hover {
+  background: var(--accent-strong);
+  box-shadow: 0 2px 6px rgba(184, 90, 26, 0.25), 0 0 0 4px var(--accent-soft);
+}
+.hero-cta:active { transform: scale(0.97); }
+.hero-cta .cta-kbd {
+  background: rgba(0,0,0,0.18);
+  color: rgba(255,255,255,0.85);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  margin-left: 4px;
+}
+[data-theme="light"] .hero-cta .cta-kbd { background: rgba(255,255,255,0.25); color: rgba(255,255,255,0.95); }
+
+.hero-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  background: transparent;
+  color: var(--text-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--d-press) var(--ease-out);
+}
+.hero-secondary:hover {
+  background: var(--surface);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+.hero-secondary .cta-kbd {
+  background: var(--surface-2);
+  color: var(--text-muted);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  margin-left: 2px;
+}
+
+@media (max-width: 720px) {
+  .hero { flex-direction: column; align-items: stretch; padding: 24px; }
+  .hero-right { align-items: stretch; }
+  .hero-cta { justify-content: center; }
+  .hero-secondary { display: none; }
+}
+
+/* ===== EMPTY STATES v6.2 ===== */
+.empty-v6 {
+  text-align: center;
+  padding: 60px 24px;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 0%, var(--accent-soft) 0%, transparent 60%),
+    var(--surface);
+  position: relative;
+}
+.empty-v6 .illust-v6 {
+  width: 140px; height: 140px;
+  margin: 0 auto 20px;
+  display: block;
+}
+.empty-v6 h3 {
+  font-family: 'Newsreader', serif;
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.empty-v6 p {
+  color: var(--text-muted);
+  font-size: 14.5px;
+  line-height: 1.55;
+  max-width: 380px;
+  margin: 0 auto 18px;
+}
+.empty-v6 .examples {
+  display: flex; gap: 8px; justify-content: center;
+  flex-wrap: wrap; margin-top: 16px;
+}
+.empty-v6 .example-chip {
+  padding: 6px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: all var(--d-press) var(--ease-out);
+  font-family: 'JetBrains Mono', monospace;
+}
+.empty-v6 .example-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+}
+.empty-v6 .hint-row {
+  display: inline-flex; gap: 8px;
+  padding: 8px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 14px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.empty-v6 .hint-row b { color: var(--accent); font-weight: 700; }
+
+/* ===== FAB MOBILE v6.6 ===== */
+.fab {
+  display: none;
+  position: fixed;
+  bottom: 24px; right: 24px;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-text);
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(184, 90, 26, 0.35), 0 8px 24px rgba(0,0,0,0.15);
+  z-index: 50;
+  transition: transform var(--d-press) var(--ease-out), box-shadow var(--d-press) var(--ease-out);
+}
+.fab:hover { transform: scale(1.05); }
+.fab:active { transform: scale(0.92); }
+.fab svg { width: 24px; height: 24px; }
+@media (max-width: 880px) {
+  .fab { display: flex; }
+  .topbar-actions .btn-primary span:not(.kbd),
+  .topbar-actions .btn-primary svg { display: none; }
+  .topbar-actions .btn-primary { padding: 8px; width: 36px; height: 36px; border-radius: 9px; }
+}
+
+/* ===== BOTTOM NAV MOBILE v6.6 ===== */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+  z-index: 40;
+  justify-content: space-around;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.bottom-nav button {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--d-press) var(--ease-out);
+  min-width: 56px;
+}
+.bottom-nav button svg { width: 22px; height: 22px; stroke-width: 1.8; }
+.bottom-nav button.active { color: var(--accent); }
+.bottom-nav button:active { transform: scale(0.92); }
+@media (max-width: 880px) {
+  .bottom-nav { display: flex; }
+  .main { padding-bottom: 96px; }
+}
+
+/* ===== TASK ITEM v6.3 — más vivo ===== */
+.item-v6 {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background var(--d-press) var(--ease-out), transform var(--d-press) var(--ease-out);
+  user-select: none;
+  animation: itemEnter 360ms var(--ease-out) backwards;
+  position: relative;
+  border: 1px solid transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+  .item-v6:hover { background: var(--surface); border-color: var(--border); }
+}
+.item-v6:active { transform: scale(0.998); }
+.item-v6.done .name { color: var(--text-muted); text-decoration: line-through; }
+.item-v6.priority { border-left: 3px solid var(--danger); padding-left: 13px; }
+
+/* ===== WELCOME BANNER v6.8 ===== */
+.welcome-banner {
+  background: linear-gradient(135deg, var(--accent-soft) 0%, transparent 100%);
+  border: 1px solid var(--accent);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  animation: reveal 600ms var(--ease-out) both;
+}
+.welcome-banner .wb-icon {
+  width: 48px; height: 48px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border-radius: 12px;
+  display: grid; place-items: center;
+  font-family: 'Editorial', serif;
+  font-size: 24px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.welcome-banner .wb-body { flex: 1; }
+.welcome-banner h3 {
+  font-family: 'Editorial', serif;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.welcome-banner p {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin: 0;
+}
+.welcome-banner button {
+  padding: 7px 14px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.welcome-banner .wb-close {
+  background: transparent;
+  color: var(--text-muted);
+  padding: 4px 8px;
+  font-size: 18px;
+  line-height: 1;
+}
+
 
 /* Skip-link para teclado / screen readers */
 .skip-link {
@@ -1365,19 +1737,58 @@ button { position: relative; overflow: hidden; }
   <!-- ========== MAIN ========== -->
   <main class="main" id="mainContent" role="main" tabindex="-1">
 
-    <div class="topbar">
-      <div class="greeting-block">
-        <span class="eyebrow"><span class="dot"></span><span id="dateStrShort"></span></span>
+    <div class="welcome-banner" id="welcomeBanner" style="display:none" role="status">
+      <div class="wb-icon">M</div>
+      <div class="wb-body">
+        <h3>Bienvenido a Mañana</h3>
+        <p id="welcomeMsg">Tu app diaria de tareas. Empieza añadiendo la primera — algo pequeño.</p>
+      </div>
+      <button class="wb-close" id="welcomeClose" aria-label="Cerrar bienvenida">×</button>
+    </div>
+
+    <section class="hero" aria-label="Saludo y acciones rápidas">
+      <div class="hero-left">
+        <span class="eyebrow">
+          <span class="dot"></span>
+          <span id="dateStrShort"></span>
+          <span class="eyebrow-sep"></span>
+          <span class="eyebrow-week">Semana <span id="weekNum"></span></span>
+        </span>
         <h1 class="hello" id="hello">Buenos días</h1>
-        <div class="date-line">
-          <span id="dateStr"></span>
-          <span class="sep"></span>
-          <span>Semana <span id="weekNum"></span></span>
-          <span class="sep"></span>
-          <span id="weatherSlot">Cargando día…</span>
+        <p class="hero-question" id="heroQuestion">¿Qué vas a hacer hoy?</p>
+        <div class="hero-meta">
+          <span class="hero-chip" id="chipPending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14"><circle cx="12" cy="12" r="9"/></svg><span id="chipPendingTxt">—</span></span>
+          <span class="hero-chip" id="chipDone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M5 12l5 5 9-9"/></svg><span id="chipDoneTxt">—</span></span>
+          <span class="hero-chip" id="chipStreak"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/></svg><span id="chipStreakTxt">—</span></span>
         </div>
       </div>
-      <div class="topbar-actions">
+      <div class="hero-right">
+        <button class="hero-cta" id="btnNew">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Nueva tarea</span>
+          <span class="cta-kbd">⌘N</span>
+        </button>
+        <button class="hero-secondary" id="btnSearch" aria-label="Buscar" title="Buscar (⌘F)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>Buscar</span>
+          <span class="cta-kbd">⌘F</span>
+        </button>
+        <div class="hero-actions">
+          <button class="icon-btn" id="btnCmd" aria-label="Paleta de comandos" title="Paleta (⌘K)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3h6M12 3v6M9 21h6M12 21v-6M3 9v6M21 9v6M3 12h6M21 12h-6"/></svg>
+          </button>
+          <button class="icon-btn" id="btnTheme" aria-label="Cambiar tema" title="Tema (T)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          </button>
+          <button class="icon-btn" id="btnNotif" aria-label="Activar avisos" title="Avisos (N)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M14 21a2 2 0 1 1-4 0"/></svg>
+          </button>
+          <button class="icon-btn mobile-toggle" id="btnMenu" aria-label="Menú">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 17h16"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
         <button class="icon-btn mobile-toggle" id="btnMenu" aria-label="Menú">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16M4 17h16"/></svg>
         </button>
@@ -1519,6 +1930,14 @@ button { position: relative; overflow: hidden; }
     </div>
 
   </main>
+  <button class="fab" id="fabAdd" aria-label="Nueva tarea"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg></button>
+  <nav class="bottom-nav" role="navigation" aria-label="Navegación inferior">
+    <button class="active" data-bn="today" aria-label="Hoy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Hoy</span></button>
+    <button data-bn="week" aria-label="Semana"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Semana</span></button>
+    <button data-bn="habits" aria-label="Hábitos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3.5 14c1-4 4-6 8.5-6s7.5 2 8.5 6"/><path d="M12 8v6M8 11l4-3 4 3"/></svg><span>Hábitos</span></button>
+    <button data-bn="stats" aria-label="Estadísticas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg><span>Stats</span></button>
+    <button data-bn="settings" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg><span>Ajustes</span></button>
+  </nav>
 </div>
 
 <!-- ========== MODAL: TAREA ========== -->
@@ -2928,16 +3347,50 @@ function toast({ title, body, kind }) {
 
 /* -------- Render principal -------- */
 function render() {
-  // Topbar
+  // Hero (v6)
   const g = greeting();
   $('#hello').innerHTML = '';
-  $('#hello').appendChild(document.createTextNode(g.txt + ', '));
+  $('#hello').appendChild(document.createTextNode(g.txt + (settings.name ? ', ' + settings.name : '')));
   const em = document.createElement('em'); em.textContent = g.em;
   $('#hello').appendChild(em);
-  $('#dateStr').textContent = fmtDateLong();
   $('#dateStrShort').textContent = new Date().toLocaleDateString('es-ES', { weekday: 'long' });
   $('#weekNum').textContent = weekNum();
-  $('#weatherSlot').textContent = `${new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} · ${visibleTasks().filter(t => !t.done).length} por hacer`;
+
+  // Hero chips (v6)
+  const todayHero = todayStr();
+  const todayAll = state.tasks.filter(t => t.date === todayHero);
+  const todayDone = todayAll.filter(t => t.done).length;
+  const todayPending = todayAll.filter(t => !t.done).length;
+  // todayHeroPending ya declarado arriba
+  const todayHeroPending = todayPending;
+  $('#chipPendingTxt').textContent = todayHeroPending + (todayPending === 1 ? ' pendiente' : ' pendientes');
+  $('#chipDoneTxt').textContent = todayDone + (todayDone === 1 ? ' hecha' : ' hechas');
+  let streakHero = 0;
+  const dHero = new Date();
+  while (true) {
+    const k = dHero.toISOString().slice(0, 10);
+    if (state.logs[k]) { streakHero++; dHero.setDate(dHero.getDate() - 1); } else break;
+  }
+  $('#chipStreakTxt').textContent = streakHero === 1 ? '1 día de racha' : streakHero + ' días de racha';
+
+  // Hero question
+  if (todayAll.length === 0) {
+    $('#heroQuestion').textContent = '¿Qué quieres hacer hoy?';
+  } else if (todayPending === 0 && todayDone > 0) {
+    $('#heroQuestion').textContent = 'Día completo. A descansar.';
+  } else {
+    $('#heroQuestion').textContent = 'Te quedan ' + todayPending + (todayPending === 1 ? ' cosa' : ' cosas') + ' por hacer.';
+  }
+
+  // Welcome banner
+  if (settings.showWelcome !== false) {
+    $('#welcomeBanner').style.display = 'flex';
+    if (state.tasks.length === 0) {
+      $('#welcomeMsg').textContent = 'Empieza añadiendo algo pequeño — una tarea de 5 minutos.';
+    } else {
+      $('#welcomeMsg').textContent = 'Pulsa ⌘K para abrir la paleta de comandos cuando quieras.';
+    }
+  }
 
   // Stats
   const today = todayStr();
@@ -2957,8 +3410,24 @@ function render() {
   $('#sTotalTxt').textContent = `${allToday.length} en total`;
   $('#sBar').style.width = rate + '%';
   $('#sRate').textContent = rate;
+  // Update hero stats (reusa variables ya declaradas)
   const ring = $('#sRing');
   if (ring) ring.style.strokeDashoffset = 283 - (283 * rate / 100);
+  const hr = $('#heroRate'); if (hr) { const txt = hr.firstChild; if (txt) txt.textContent = rate; }
+  const hb = $('#heroBar'); if (hb) hb.style.width = rate + '%';
+  const hrt = $('#heroRateTxt'); if (hrt) hrt.textContent = doneToday + ' de ' + allToday.length + ' hechas';
+  const hstreak = $('#heroStreak'); if (hstreak) hstreak.textContent = streak;
+  const hpend = $('#heroPending'); if (hpend) hpend.textContent = pending;
+  const hnext = $('#heroNext'); if (hnext) {
+    const next = visibleTasks().find(t => !t.done && t.time);
+    hnext.textContent = next ? ('próxima ' + next.time) : 'sin hora';
+  }
+  const hh = $('#heroHabits'); if (hh) hh.textContent = state.habits.length;
+  const hhFoot = $('#heroHabitsTxt');
+  if (hhFoot) {
+    const doneH = state.habits.filter(h => h.log[todayStr()]).length;
+    hhFoot.textContent = doneH + '/' + state.habits.length + ' hoy';
+  }
 
   $('#sStreak').textContent = streak;
   $('#sPending').textContent = pending;
@@ -3017,27 +3486,52 @@ function render() {
 }
 
 function renderEmpty(v) {
-  const node = el('div', { class: 'empty' });
-  const illust = el('div', { class: 'illust' });
-  illust.innerHTML = '<svg viewBox="0 0 120 80" width="120" height="80" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="10" y="14" width="100" height="64" rx="6"/><path d="M10 28h100M22 14V8M42 14V8M62 14V8"/><circle cx="40" cy="48" r="10" stroke-dasharray="3 3"/><path d="M50 48h22M82 48h12"/></svg>';
+  const node = el('div', { class: 'empty-v6' });
+  // ilustración SVG distinta según contexto
+  const illust = el('div', { class: 'illust-v6' });
+  let svg = '';
+  if (v === 'today') {
+    svg = '<svg viewBox="0 0 140 140" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="70" cy="70" r="56" stroke-dasharray="3 6" opacity="0.4"/><circle cx="70" cy="70" r="42" stroke-width="2"/><path d="M70 50v20M70 70h16M50 92l8 8 22-22" stroke-width="2" stroke-linecap="round"/><circle cx="105" cy="35" r="6" fill="currentColor"/></svg>';
+  } else if (v === 'upcoming') {
+    svg = '<svg viewBox="0 0 140 140" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="22" y="32" width="96" height="78" rx="6"/><path d="M22 50h96M32 32V22M108 32V22M40 70h12M40 84h20M68 70h12M68 84h20M96 70h8M96 84h8" stroke-linecap="round"/></svg>';
+  } else {
+    svg = '<svg viewBox="0 0 140 140" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M30 110V50l40-22 40 22v60"/><path d="M30 110h80M50 110V80h40v30" stroke-linejoin="round"/><circle cx="100" cy="45" r="3" fill="currentColor"/></svg>';
+  }
+  illust.innerHTML = svg;
   node.appendChild(illust);
 
-  const h3 = el('h3', {}, 'Aún no hay nada por aquí');
-  node.appendChild(h3);
-
-  let hintText;
-  if (v === 'today') hintText = 'Empieza con algo pequeño. Una tarea de cinco minutos es mejor que ninguna.';
-  else if (v === 'upcoming') hintText = 'Tu semana está despejada. Añade algo con sintaxis natural tipo ';
-  else hintText = 'No tienes tareas pendientes. ';
-
-  const p = el('p');
-  p.appendChild(document.createTextNode(hintText));
-  if (v === 'upcoming') {
-    const code = el('code', {}, '!alta +mañana @10:00');
-    p.appendChild(code);
-    p.appendChild(document.createTextNode(' arriba.'));
-  }
+  const titles = {
+    today: 'Aún no tienes nada para hoy',
+    upcoming: 'Tu semana está despejada',
+    all: 'No tienes tareas pendientes',
+  };
+  const subs = {
+    today: 'Empieza con algo pequeño. Una tarea de cinco minutos es mejor que ninguna — y te quita la parálisis.',
+    upcoming: 'Aprovecha para planificar. Escribe algo con sintaxis natural y te lo organizo yo:',
+    all: 'Buen momento para descansar, o para crear plantillas con tareas recurrentes.',
+  };
+  node.appendChild(el('h3', {}, titles[v] || titles.today));
+  const p = el('p', {}, subs[v] || subs.today);
   node.appendChild(p);
+
+  // Chips con ejemplos de sintaxis
+  const examples = el('div', { class: 'examples' });
+  const chips = v === 'today'
+    ? ['Llamar a Marta', 'Revisar emails !alta', 'Pasear 20m @19:00']
+    : ['Comprar pan', 'Reunión lunes @10:00', 'Renovar DNI !alta'];
+  chips.forEach(text => {
+    const chip = el('button', { class: 'example-chip' }, text);
+    chip.onclick = () => {
+      const inp = $('#quickInput');
+      if (inp) { inp.value = text; inp.focus(); }
+    };
+    examples.appendChild(chip);
+  });
+  node.appendChild(examples);
+
+  const hint = el('div', { class: 'hint-row' });
+  hint.innerHTML = '<b>Tip</b> · pulsa <kbd>⌘N</kbd> para abrir el editor completo, o <kbd>⌘K</kbd> para la paleta';
+  node.appendChild(hint);
   return node;
 }
 
@@ -3054,10 +3548,9 @@ function renderHabitsEmpty() {
 function renderItem(t, i) {
   const overdue = !t.done && t.date < todayStr();
   const isToday = t.date === todayStr();
-
   const hasSubs = t.subtasks && t.subtasks.length > 0;
   const node = el('div', {
-    class: 'item' + (t.done ? ' done' : '') + (t.priority === 1 ? ' priority' : '') + (overdue ? ' overdue' : '') + (hasSubs ? ' has-subtasks' : ''),
+    class: 'item-v6' + (t.done ? ' done' : '') + (t.priority === 1 ? ' priority' : '') + (overdue ? ' overdue' : '') + (hasSubs ? ' has-subtasks' : ''),
     dataset: { id: t.id },
     style: { animationDelay: (i * 35) + 'ms' },
     role: 'button',
@@ -3555,6 +4048,28 @@ function wire() {
     save();
     render();
     toast({ title: 'Datos borrados' });
+  };
+
+  // Bottom nav mobile (v6.6)
+  $$('.bottom-nav button').forEach(b => {
+    b.onclick = () => setView(b.dataset.bn);
+  });
+  // Update active state cuando cambia la vista
+  const _setView_orig = setView;
+  // Reemplazar setView para que también actualice bottom nav
+  setView = function(v) {
+    _setView_orig(v);
+    $$('.bottom-nav button').forEach(b => b.classList.toggle('active', b.dataset.bn === v));
+  };
+
+  // FAB
+  $('#fabAdd').onclick = () => openModal();
+
+  // Welcome banner close
+  $('#welcomeClose').onclick = () => {
+    $('#welcomeBanner').style.display = 'none';
+    settings.showWelcome = false;
+    saveSettings();
   };
 
   // Permissions
