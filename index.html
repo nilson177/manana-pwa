@@ -90,6 +90,29 @@
   --d-modal: 240ms;
   --d-tab: 220ms;
   --d-reveal: 600ms;
+  --d-page: 280ms;
+
+  /* tipo scale (modular 1.250 — Major Third) */
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-base: 14px;
+  --fs-md: 15px;
+  --fs-lg: 17px;
+  --fs-xl: 20px;
+  --fs-2xl: 26px;
+  --fs-3xl: 36px;
+  --fs-display: clamp(36px, 6vw, 64px);
+
+  /* line-heights */
+  --lh-tight: 1.05;
+  --lh-snug: 1.2;
+  --lh-base: 1.5;
+  --lh-loose: 1.7;
+
+  /* tracking */
+  --tr-tight: -0.03em;
+  --tr-base: -0.011em;
+  --tr-wide: 0.04em;
 }
 
 [data-theme="dark"] {
@@ -268,7 +291,8 @@ a { color: inherit; text-decoration: none; }
 .sidebar-foot button svg { width: 16px; height: 16px; stroke-width: 1.5; }
 
 /* ==== MAIN ==== */
-.main { padding: 52px 56px 140px; min-width: 0; }
+.main { padding: 52px 56px 140px; min-width: 0; transition: opacity var(--d-page) var(--ease-out); }
+.main[data-view-changing="true"] { opacity: 0; transform: translateY(6px); }
 @media (max-width: 880px) { .main { padding: 32px 22px 140px; } }
 
 /* ==== TOPBAR ==== */
@@ -379,11 +403,11 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: center; gap: 8px;
 }
 .bento-card .num {
-  font-family: 'Editorial', serif;
-  font-size: 52px;
+  font-family: 'Editorial', 'Newsreader', serif;
+  font-size: var(--fs-3xl);
   font-weight: 400;
-  letter-spacing: -0.04em;
-  line-height: 1;
+  letter-spacing: var(--tr-tight);
+  line-height: var(--lh-tight);
   font-variant-numeric: tabular-nums;
 }
 .bento-card.accent .num { color: var(--accent); }
@@ -485,12 +509,33 @@ a { color: inherit; text-decoration: none; }
 .cmd {
   display: flex; align-items: center;
   gap: 10px;
-  padding: 12px 14px;
+  padding: 14px 18px;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 11px;
-  transition: border-color var(--d-press) var(--ease-out), box-shadow var(--d-press) var(--ease-out);
-  margin-bottom: 40px;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  transition: border-color var(--d-press) var(--ease-out), box-shadow var(--d-press) var(--ease-out), background var(--d-press) var(--ease-out);
+  margin-bottom: 32px;
+  position: relative;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+}
+.cmd::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 3px var(--ok-bg);
+  opacity: 0;
+  transition: opacity var(--d-press);
+}
+.cmd:focus-within::before { opacity: 1; }
+.cmd:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  background: var(--surface);
 }
 .cmd:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .cmd input {
@@ -684,7 +729,33 @@ a { color: inherit; text-decoration: none; }
 }
 .habit-card:hover { border-color: var(--border-strong); }
 .habit-card:active { transform: scale(0.98); }
-.habit-card.done-today { border-color: var(--ok); background: linear-gradient(160deg, var(--surface) 50%, var(--ok-bg) 130%); }
+.habit-card {
+  transition: all 280ms var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+.habit-card.done-today {
+  border-color: var(--ok);
+  background: linear-gradient(160deg, var(--surface) 50%, var(--ok-bg) 130%);
+  animation: habitComplete 600ms var(--ease-out);
+}
+.habit-card.just-done::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--ok-bg) 0%, transparent 70%);
+  animation: habitBurst 800ms var(--ease-out);
+  pointer-events: none;
+}
+@keyframes habitComplete {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+@keyframes habitBurst {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
 .habit-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .habit-emoji {
   width: 28px; height: 28px;
@@ -1075,13 +1146,17 @@ a { color: inherit; text-decoration: none; }
 .bars {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 8px;
   align-items: end;
-  min-height: 200px;
-  padding: 20px 12px;
-  background: var(--surface);
+  min-height: 220px;
+  padding: 24px 18px;
+  background:
+    radial-gradient(ellipse at 50% 100%, var(--accent-soft) 0%, transparent 60%),
+    var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
 }
 .bar-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .bar-col .bar {
@@ -1095,10 +1170,12 @@ a { color: inherit; text-decoration: none; }
 }
 .bar-col .bar > span {
   position: absolute; bottom: 0; left: 0; right: 0;
-  background: linear-gradient(180deg, var(--accent), var(--accent-strong));
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-strong) 100%);
   border-radius: 4px 4px 0 0;
-  transition: height 600ms var(--ease-out);
+  transition: height 700ms var(--ease-out);
+  box-shadow: 0 -2px 8px rgba(184, 90, 26, 0.15);
 }
+.bar-col.today .bar > span { box-shadow: 0 -2px 12px var(--accent), 0 0 20px var(--accent-soft); }
 .bar-col .bar-day { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
 .bar-col .bar-num { font-family: JetBrains Mono, monospace; font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
 
@@ -1220,11 +1297,11 @@ a { color: inherit; text-decoration: none; }
 
 .hello {
   font-family: 'Newsreader', 'Lyon Text', 'Instrument Serif', 'Cambria', Georgia, serif;
-  font-size: clamp(34px, 5.5vw, 56px);
+  font-size: var(--fs-display);
   font-weight: 400;
-  letter-spacing: -0.028em;
-  line-height: 1.05;
-  margin: 8px 0 6px;
+  letter-spacing: var(--tr-tight);
+  line-height: var(--lh-tight);
+  margin: 10px 0 8px;
 }
 .hello em {
   font-style: italic;
@@ -1334,6 +1411,70 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ===== EMPTY STATES v6.2 ===== */
+.settings-tabs {
+  display: flex; gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 4px;
+  border-radius: 11px;
+  margin-bottom: 24px;
+  width: fit-content;
+  flex-wrap: wrap;
+}
+.settings-tab {
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-radius: 7px;
+  transition: all var(--d-press) var(--ease-out);
+}
+.settings-tab:hover { color: var(--text); }
+.settings-tab.active { background: var(--surface-3); color: var(--text); }
+.settings-tab:active { transform: scale(0.96); }
+.bento-tag {
+  display: inline-block;
+  padding: 3px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-soft);
+}
+.theme-picker {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.theme-card { display: block; cursor: pointer; }
+.theme-card input { position: absolute; opacity: 0; pointer-events: none; }
+.theme-card span {
+  display: block;
+  padding: 24px 14px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  border: 2px solid var(--border);
+  transition: all var(--d-press) var(--ease-out);
+  position: relative;
+}
+.theme-card-light { background: #fafaf9; color: #1a1a1a; }
+.theme-card-dark { background: #16181f; color: #ecEAE3; border-color: var(--border); }
+.theme-card-auto { background: linear-gradient(135deg, #fafaf9 50%, #16181f 50%); color: var(--text-muted); }
+.theme-card input:checked + span {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  transform: translateY(-2px);
+}
+.theme-card input:checked + span::after {
+  content: '✓';
+  position: absolute;
+  top: 6px; right: 8px;
+  color: var(--accent);
+  font-weight: 800;
+}
+
 .empty-v6 {
   text-align: center;
   padding: 60px 24px;
@@ -1922,7 +2063,7 @@ button { position: relative; overflow: hidden; }
     <!-- QUICK ADD -->
     <div class="cmd">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="color:var(--text-muted)"><path d="M12 5v14M5 12h14"/></svg>
-      <input type="text" id="quickInput" placeholder="¿Qué tienes que hacer? — escribe !alta, +mañana, @14:30, proyecto:web">
+      <input type="text" id="quickInput" placeholder="Próxima tarea… (pulsa Enter)">
       <span class="hint"><span class="kbd">⏎</span> añadir</span>
     </div>
 
@@ -2782,13 +2923,33 @@ function setupSwipe() {
 let dragData = null;
 function setupDragHandlers() {
   document.addEventListener('dragstart', e => {
-    const item = e.target.closest('.item, .cal-task');
+    const item = e.target.closest('.item-v6, .cal-task');
     if (!item) return;
     const id = sanitizeId(item.dataset.id);
     if (!id) return;
     dragData = { id, source: 'task' };
     item.classList.add('dragging');
-    try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', id); } catch {}
+    // Custom drag image (preview fantasma)
+    try {
+      const ghost = item.cloneNode(true);
+      ghost.style.position = 'absolute';
+      ghost.style.top = '-1000px';
+      ghost.style.left = '-1000px';
+      ghost.style.width = item.offsetWidth + 'px';
+      ghost.style.opacity = '0.85';
+      ghost.style.transform = 'rotate(-2deg)';
+      ghost.style.boxShadow = '0 8px 24px rgba(0,0,0,0.2)';
+      ghost.style.borderRadius = '12px';
+      ghost.style.background = 'var(--surface)';
+      ghost.style.padding = '8px 12px';
+      ghost.style.pointerEvents = 'none';
+      ghost.classList.add('drag-ghost');
+      document.body.appendChild(ghost);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', id);
+      e.dataTransfer.setDragImage(ghost, 20, 20);
+      setTimeout(() => ghost.remove(), 0);
+    } catch {}
   });
   document.addEventListener('dragend', e => {
     const item = e.target.closest('.item, .cal-task');
@@ -2980,6 +3141,7 @@ function renderSearch(q) {
 function renderStats() {
   const grid = $('#statsBento');
   grid.innerHTML = '';
+  // (el cuerpo ya existe)
   // datos
   const allTasks = state.tasks;
   const done = allTasks.filter(t => t.done).length;
@@ -3016,6 +3178,46 @@ function renderStats() {
   });
   $('#statsMeta').textContent = total + ' tareas en total';
   renderWeeklyBars();
+  renderHourDistribution();
+}
+function renderHourDistribution() {
+  const wrap = $('#hourBars');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const counts = new Array(24).fill(0);
+  state.tasks.forEach(t => {
+    if (t.time && t.date) {
+      const h = parseInt(t.time.split(':')[0]);
+      if (h >= 0 && h < 24) counts[h]++;
+    }
+  });
+  const max = Math.max(1, ...counts);
+  for (let i = 0; i < 24; i++) {
+    const col = document.createElement('div');
+    col.className = 'bar-col';
+    col.style.minHeight = 'auto';
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    bar.style.height = '80px';
+    bar.style.position = 'relative';
+    const fill = document.createElement('span');
+    const pct = counts[i] / max;
+    fill.style.height = (pct * 100) + '%';
+    fill.style.position = 'absolute';
+    fill.style.bottom = '0'; fill.style.left = '0'; fill.style.right = '0';
+    fill.style.background = 'linear-gradient(180deg, var(--accent), var(--accent-strong))';
+    fill.style.borderRadius = '3px 3px 0 0';
+    fill.style.transition = 'height 700ms var(--ease-out)';
+    bar.appendChild(fill);
+    const label = document.createElement('div');
+    label.className = 'bar-day';
+    label.style.fontSize = '9px';
+    label.textContent = i.toString().padStart(2, '0');
+    col.appendChild(bar);
+    col.appendChild(label);
+    col.title = i + ':00 — ' + counts[i] + ' tareas';
+    wrap.appendChild(col);
+  }
 }
 function bestStreak() {
   const keys = Object.keys(state.logs).filter(k => state.logs[k]).sort();
@@ -3284,6 +3486,7 @@ function setupTagInput() {
 
 /* -------- View routing -------- */
 let view = 'today';
+let _lastView = null;
 let tab = 'all';
 let editing = null;
 
@@ -4180,18 +4383,50 @@ function wire() {
     else if (e.key === 'Enter') { e.preventDefault(); execCmd(); }
   });
 
-  // Settings
-  $('#btnSaveSettings').onclick = () => {
-    settings.name = sanitize($('#setName').value, 60);
-    settings.hourPush = $('#setHour').value || '08:30';
-    settings.theme = $('#setTheme').value;
-    settings.sound = $('#setSound').value;
-    saveSettings();
-    applyTheme();
-    scheduleDailyPush();
-    toast({ title: 'Guardado', variant: 'ok' });
-    render();
-  };
+  // Settings tabs
+  $$('.settings-tab').forEach(t => {
+    t.onclick = () => {
+      $$('.settings-tab').forEach(x => x.classList.toggle('active', x === t));
+      $$('.settings-panel').forEach(p => p.style.display = p.dataset.stab === t.dataset.stab ? 'block' : 'none');
+      announce('Pestaña ' + t.textContent);
+    };
+  });
+
+  // Theme picker
+  $$('input[name="themeChoice"]').forEach(r => {
+    r.checked = settings.theme === r.value;
+    r.onchange = () => {
+      settings.theme = r.value;
+      saveSettings(); applyTheme();
+      toast({ title: 'Tema cambiado', body: settings.theme, variant: 'info' });
+    };
+  });
+
+  // Confetti
+  const setConfettiEl = document.getElementById('setConfetti');
+  if (setConfettiEl) {
+    setConfettiEl.value = settings.confetti === false ? 'off' : 'on';
+    setConfettiEl.onchange = () => {
+      settings.confetti = setConfettiEl.value === 'on';
+      saveSettings();
+    };
+  }
+
+  // Save button legacy (si existe)
+  const saveBtn = $('#btnSaveSettings');
+  if (saveBtn) {
+    saveBtn.onclick = () => {
+      settings.name = sanitize($('#setName').value, 60);
+      settings.hourPush = $('#setHour').value || '08:30';
+      settings.theme = settings.theme;  // ya actualizado por los radio
+      settings.sound = $('#setSound').value;
+      saveSettings();
+      applyTheme();
+      scheduleDailyPush();
+      toast({ title: 'Guardado', variant: 'ok' });
+      render();
+    };
+  }
   $('#btnReset').onclick = () => {
     if (!confirm('¿Seguro? Esto borra TODAS tus tareas y hábitos.')) return;
     if (!confirm('Última oportunidad. No se puede deshacer.')) return;
